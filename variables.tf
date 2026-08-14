@@ -27,20 +27,24 @@ variable "subnets" {
     name             = string
     address_prefixes = list(string)
   }))
+
   default = {
     subnet_1 = {
       name             = "subnet-frontend"
       address_prefixes = ["10.0.1.0/24"]
     }
+
     subnet_2 = {
       name             = "subnet-backend"
       address_prefixes = ["10.0.2.0/24"]
     }
+
     subnet_3 = {
       name             = "subnet-database"
       address_prefixes = ["10.0.3.0/24"]
     }
   }
+
   description = "Map of 3 workload subnets"
 }
 
@@ -84,15 +88,17 @@ variable "lb_name" {
 variable "key_vault_name" {
   type        = string
   default     = "kv-aitest-dev-01"
-  description = "Globally unique Azure Key Vault Name (3-24 alphanumeric characters/hyphens)"
+  description = "Globally unique Azure Key Vault Name"
 }
 
 variable "tags" {
-  type        = map(string)
+  type = map(string)
+
   default = {
     Environment = "Dev"
     Project     = "AITesting-Infrastructure"
     ManagedBy   = "Terraform"
   }
+
   description = "Common Tags"
 }
