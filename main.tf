@@ -1,5 +1,7 @@
+# Fetch Azure Client & Tenant Config
 data "azurerm_client_config" "current" {}
 
+# 1. Resource Group Module
 module "resource_group" {
   source   = "./modules/resource_group"
   name     = var.resource_group_name
@@ -7,6 +9,7 @@ module "resource_group" {
   tags     = var.tags
 }
 
+# 2. Virtual Network & Subnets Module
 module "vnet" {
   source                = "./modules/vnet"
   resource_group_name   = module.resource_group.name
@@ -18,6 +21,7 @@ module "vnet" {
   tags                  = var.tags
 }
 
+# 3. Azure Key Vault & Secrets Module
 module "key_vault" {
   source              = "./modules/key_vault"
   resource_group_name = module.resource_group.name
@@ -33,6 +37,7 @@ module "key_vault" {
   }
 }
 
+# 4. Virtual Machines Module (1 VM in each of the 3 subnets using Key Vault secrets)
 module "vm" {
   source              = "./modules/vm"
   resource_group_name = module.resource_group.name
@@ -48,13 +53,11 @@ module "vm" {
       subnet_id = module.vnet.subnet_ids["subnet_1"]
       vm_size   = "Standard_B1s"
     }
-
     vm_subnet_2 = {
       name      = "vm-subnet-2"
       subnet_id = module.vnet.subnet_ids["subnet_2"]
       vm_size   = "Standard_B1s"
     }
-
     vm_subnet_3 = {
       name      = "vm-subnet-3"
       subnet_id = module.vnet.subnet_ids["subnet_3"]
@@ -63,6 +66,7 @@ module "vm" {
   }
 }
 
+# 5. Azure Bastion Host Module
 module "bastion" {
   source              = "./modules/bastion"
   resource_group_name = module.resource_group.name
@@ -72,11 +76,12 @@ module "bastion" {
   tags                = var.tags
 }
 
+# 6. Load Balancer Module
 module "load_balancer" {
   source              = "./modules/load_balancer"
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
-  lb_name              = var.lb_name
-  nic_ids              = module.vm.nic_ids
-  tags                 = var.tags
+  lb_name             = var.lb_name
+  nic_ids             = module.vm.nic_ids
+  tags                = var.tags
 }
