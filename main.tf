@@ -76,7 +76,7 @@ module "load_balancer" {
   source              = "./modules/load_balancer"
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
-  lb_name             = var.lb_name
+  lb_name              = var.lb_name
   nic_ids              = module.vm.nic_ids
-  tags                = var.tags
+  tags                 = var.tags
 }
