@@ -1,4 +1,3 @@
-
 data "azurerm_client_config" "current" {}
 
 module "resource_group" {
@@ -7,6 +6,7 @@ module "resource_group" {
   location = var.location
   tags     = var.tags
 }
+
 module "vnet" {
   source                = "./modules/vnet"
   resource_group_name   = module.resource_group.name
@@ -48,11 +48,13 @@ module "vm" {
       subnet_id = module.vnet.subnet_ids["subnet_1"]
       vm_size   = "Standard_B1s"
     }
+
     vm_subnet_2 = {
       name      = "vm-subnet-2"
       subnet_id = module.vnet.subnet_ids["subnet_2"]
       vm_size   = "Standard_B1s"
     }
+
     vm_subnet_3 = {
       name      = "vm-subnet-3"
       subnet_id = module.vnet.subnet_ids["subnet_3"]
@@ -60,7 +62,6 @@ module "vm" {
     }
   }
 }
-
 
 module "bastion" {
   source              = "./modules/bastion"
@@ -76,7 +77,6 @@ module "load_balancer" {
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
   lb_name             = var.lb_name
-  nic_ids             = module.vm.nic_ids
+  nic_ids              = module.vm.nic_ids
   tags                = var.tags
 }
-
