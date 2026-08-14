@@ -1,0 +1,73 @@
+name: Terraform Plan
+
+on:
+  push:
+    branches:
+      - pipeline/login
+     
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+
+  terraform-plan:
+
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 1. Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+
+      # 2. Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+
+      # 3. Azure Login - HARD CODED
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: |
+            {
+              "clientId": "dd4159cc-b2c9-451a-a53e-bcfd96140700",
+              "clientSecret": "nuM8Q~huihZURc~vhyCU9TyIGf1PHUam.gxOtdvN",
+              "subscriptionId": "4b65089c-f974-4b72-8aa1-3a5821bc947a",
+              "tenantId": "Yfde3126b-b5b9-4d9e-ab0c-f949118194f2"
+            }
+
+
+      # 4. Check Azure Login
+      - name: Check Azure Account
+        run: |
+          az account show
+
+
+      # 5. Terraform Format
+      - name: Terraform Format
+        run: |
+          terraform fmt -check -recursive
+
+
+      # 6. Terraform Init
+      - name: Terraform Init
+        run: |
+          terraform init
+
+
+      # 7. Terraform Validate
+      - name: Terraform Validate
+        run: |
+          terraform validate
+
+
+      # 8. Terraform Plan
+      - name: Terraform Plan
+        run: |
+          terraform plan -var-file="terraform.tfvars"
