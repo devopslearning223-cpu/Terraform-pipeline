@@ -3,7 +3,7 @@ name: Terraform Plan
 on:
   push:
     branches:
-      - pipeline/login
+      - main
      
 
   workflow_dispatch:
@@ -71,3 +71,10 @@ jobs:
       - name: Terraform Plan
         run: |
           terraform plan -var-file="terraform.tfvars"
+          # --------------------------------------------------
+      # 9. Terraform Apply
+      # --------------------------------------------------
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -auto-approve -var-file="terraform.tfvars"
